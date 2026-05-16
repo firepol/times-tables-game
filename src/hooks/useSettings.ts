@@ -7,6 +7,8 @@ const DEFAULTS: AppSettings = {
   selectedTables: [2, 3, 4, 5, 6, 7, 8, 9],
   questionsPerSession: 15,
   sessionMode: 'mixed',
+  timedMode: false,
+  timerSeconds: 4,
 }
 
 function load(): AppSettings {
@@ -54,5 +56,13 @@ export function useSettings() {
     save({ sessionMode: mode })
   }, [save])
 
-  return { settings, toggleTable, setTables, setQuestionsPerSession, setSessionMode }
+  const setTimedMode = useCallback((on: boolean) => {
+    save({ timedMode: on })
+  }, [save])
+
+  const setTimerSeconds = useCallback((s: number) => {
+    save({ timerSeconds: Math.max(2, Math.min(6, s)) })
+  }, [save])
+
+  return { settings, toggleTable, setTables, setQuestionsPerSession, setSessionMode, setTimedMode, setTimerSeconds }
 }

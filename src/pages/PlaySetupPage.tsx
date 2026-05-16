@@ -27,6 +27,8 @@ export default function PlaySetupPage() {
         count: settings.questionsPerSession,
         mode,
         focusCalcKeys,
+        timedMode: settings.timedMode,
+        timerSeconds: settings.timerSeconds,
       },
     })
   }

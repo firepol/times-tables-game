@@ -93,3 +93,38 @@
   color: var(--primary);
 }
 .mode-option input { display: none; }
+
+.timed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.timed-desc { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+.toggle-btn {
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.toggle-btn.on {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.timer-picker {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.timer-label { margin: 0; font-size: 0.95rem; }
+.timer-buttons { display: flex; gap: 8px; }
+.timer-hint { margin: 0; font-size: 0.8rem; color: var(--text-muted); font-style: italic; }

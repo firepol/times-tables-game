@@ -5,6 +5,7 @@ import type { Answer, SessionItem, SessionMode } from '../types'
 import NumberPad from '../components/NumberPad'
 import MultipleChoice from '../components/MultipleChoice'
 import DragDropBoard from '../components/DragDropBoard'
+import CountdownBar from '../components/CountdownBar'
 import './GamePage.css'
 
 interface LocationState {
@@ -12,6 +13,8 @@ interface LocationState {
   count: number
   mode: SessionMode
   focusCalcKeys?: string[]
+  timedMode?: boolean
+  timerSeconds?: number
 }
 
 type FeedbackState = 'idle' | 'correct' | 'wrong'
@@ -28,6 +31,10 @@ export default function GamePage() {
   const [answers, setAnswers] = useState<Answer[]>([])
   const startTimeRef = useRef(Date.now())
   const qStartRef = useRef(Date.now())
+
+  const timedMode = state?.timedMode ?? false
+  const timerSeconds = state?.timerSeconds ?? 4
+  const timedOutRef = useRef(false)
 
   const totalItems = items.length
   const current = items[idx]
@@ -47,6 +54,7 @@ export default function GamePage() {
     } else {
       setIdx(nextIdx)
       setFeedback('idle')
+      timedOutRef.current = false
       qStartRef.current = Date.now()
     }
   }, [idx, totalItems, answers, nav, state])
@@ -72,6 +80,24 @@ export default function GamePage() {
     setAnswers((prev) => [...prev, ...blockAnswers])
     setTimeout(advance, 300)
   }, [advance])
+
+  const handleSingleTimeout = useCallback(() => {
+    if (feedback !== 'idle' || timedOutRef.current) return
+    timedOutRef.current = true
+    const q = (items[idx] as { kind: 'single'; question: { a: number; b: number; type: Answer['questionType'] } }).question
+    const answer: Answer = {
+      question: { a: q.a, b: q.b },
+      questionType: q.type,
+      correct: false,
+      userAnswer: -1,
+      correctAnswer: q.type === 'missing_factor' ? q.b : q.a * q.b,
+      timeMs: timerSeconds * 1000,
+    }
+    setAnswers((prev) => [...prev, answer])
+    setFeedback('wrong')
+    if (navigator.vibrate) navigator.vibrate([80, 40, 80])
+    setTimeout(advance, 1200)
+  }, [feedback, items, idx, timerSeconds, advance])
 
   if (!items.length) {
     return (
@@ -105,10 +131,23 @@ export default function GamePage() {
       {current.kind === 'drag_block' ? (
         <div className="game-body">
           <p className="game-instruction">Abbina ogni calcolo al risultato!</p>
-          <DragDropBoard key={idx} pairs={current.pairs} onComplete={handleDragComplete} />
+          <DragDropBoard
+            key={idx}
+            pairs={current.pairs}
+            onComplete={handleDragComplete}
+            timeLimit={timedMode ? current.pairs.length * timerSeconds : undefined}
+          />
         </div>
       ) : (
         <div className="game-body">
+          {timedMode && (
+            <CountdownBar
+              key={idx}
+              seconds={timerSeconds}
+              onExpire={handleSingleTimeout}
+              paused={feedback !== 'idle'}
+            />
+          )}
           {current.question.type === 'missing_factor' ? (
             <QuestionDisplay
               top={`${current.question.a} × ? = ${current.question.a * current.question.b}`}
