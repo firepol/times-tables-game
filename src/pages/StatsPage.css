@@ -1,0 +1,90 @@
+.sessions-count {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.stats-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.filter-label { font-size: 0.9rem; color: var(--text-muted); }
+.filter-btn {
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.filter-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.stats-section-title {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stats-legend {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+}
+
+.weak-list { display: flex; flex-direction: column; gap: 12px; }
+
+.calc-error-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.calc-error-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.calc-name { font-weight: 700; font-size: 1rem; }
+.calc-total { font-size: 0.85rem; color: var(--text-muted); }
+.calc-error-bar-fill { display: flex; gap: 4px; }
+.bar-block {
+  width: 24px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--wrong);
+  opacity: 0.7;
+}
+.calc-error-types { display: flex; gap: 8px; }
+.err-typed { color: #7c3aed; font-size: 0.8rem; font-weight: 700; }
+.err-mc    { color: #0369a1; font-size: 0.8rem; font-weight: 700; }
+.err-drag  { color: #b45309; font-size: 0.8rem; font-weight: 700; }
+
+.no-sessions { color: var(--text-muted); font-size: 0.95rem; text-align: center; padding: 16px 0; }
+
+.session-list { display: flex; flex-direction: column; gap: 8px; }
+.session-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1px solid var(--border);
+}
+.session-row:active { background: var(--primary-light); }
+.session-date { font-size: 0.85rem; color: var(--text-muted); }
+.session-meta { display: flex; gap: 12px; font-size: 0.95rem; font-weight: 600; }
+.session-meta .ok  { color: var(--correct); }
+.session-meta .ko  { color: var(--wrong); }
+.session-meta .dur { color: var(--text-muted); }

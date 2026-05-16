@@ -1,0 +1,61 @@
+.numpad {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.numpad-display {
+  background: var(--bg);
+  border: 3px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--primary);
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 4px;
+}
+.numpad-placeholder { color: var(--border); }
+
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.numpad-key {
+  padding: 0;
+  height: 68px;
+  border-radius: var(--radius-sm);
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 2px solid var(--border);
+  box-shadow: 0 3px 0 var(--border);
+  transition: transform 0.08s, box-shadow 0.08s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.numpad-key:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.numpad-del {
+  background: #fff7ed;
+  color: #ea580c;
+  border-color: #fed7aa;
+}
+.numpad-ok {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary-dark);
+  box-shadow: 0 3px 0 var(--primary-dark);
+}
+.numpad-ok:active { box-shadow: none; }

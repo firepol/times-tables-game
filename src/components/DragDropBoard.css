@@ -1,0 +1,57 @@
+.dd-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.dd-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dd-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  user-select: none;
+  touch-action: none;
+  transition: all 0.15s;
+}
+
+.dd-calc {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+  cursor: grab;
+}
+.dd-calc:active, .dd-calc.dragging { cursor: grabbing; opacity: 0.6; box-shadow: none; }
+
+.dd-result { background: var(--card-bg); color: var(--text); }
+.dd-result.over { border-color: var(--primary); background: var(--primary-light); transform: scale(1.04); }
+.dd-result.correct { background: var(--correct-light); border-color: var(--correct); color: var(--correct); animation: pop 0.3s ease; }
+.dd-result.wrong   { background: var(--wrong-light); border-color: var(--wrong); color: var(--wrong); animation: shake 0.4s ease; }
+
+.dd-cell.matched {
+  background: var(--correct-light);
+  border-color: transparent;
+  box-shadow: none;
+  opacity: 0.3;
+}
+
+.dragging-overlay {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary-dark);
+  opacity: 0.9;
+  box-shadow: 0 8px 24px rgba(108,61,224,0.4);
+  cursor: grabbing;
+}

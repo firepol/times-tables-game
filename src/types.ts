@@ -1,26 +1,41 @@
-export type QuestionType = 'multiple-choice' | 'drag-drop' | 'fill-in'
+export type QuestionType =
+  | 'classic_typed'
+  | 'classic_mc'
+  | 'missing_factor'
+  | 'drag_drop'
+
+export type SessionMode = 'mixed' | 'drag_drop' | 'multiple_choice' | 'typed'
+
+export interface Question {
+  a: number
+  b: number
+  type: QuestionType
+}
+
+export type SessionItem =
+  | { kind: 'single'; question: Question }
+  | { kind: 'drag_block'; pairs: Array<{ a: number; b: number }> }
 
 export interface Answer {
-  value: number
-  isCorrect: boolean
-  selectedAt?: number
+  question: { a: number; b: number }
+  questionType: QuestionType
+  correct: boolean
+  userAnswer: number
+  correctAnswer: number
+  timeMs: number
 }
 
 export interface GameSession {
   id: string
-  tableNumber: number
-  questionType: QuestionType
-  startedAt: number
-  endedAt?: number
+  date: string
+  tables: number[]
+  mode: SessionMode
   answers: Answer[]
-  score: number
-  totalQuestions: number
+  durationMs: number
 }
 
 export interface AppSettings {
   selectedTables: number[]
-  questionTypes: QuestionType[]
   questionsPerSession: number
-  soundEnabled: boolean
-  language: 'it' | 'en'
+  sessionMode: SessionMode
 }

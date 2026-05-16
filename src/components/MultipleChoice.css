@@ -1,0 +1,37 @@
+.mc-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.mc-btn {
+  width: 100%;
+  padding: 22px;
+  border-radius: var(--radius);
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mc-btn:active { transform: scale(0.97); }
+
+.mc-btn.correct {
+  background: var(--correct-light);
+  border-color: var(--correct);
+  color: var(--correct);
+  animation: pop 0.3s ease;
+}
+.mc-btn.wrong {
+  background: var(--wrong-light);
+  border-color: var(--wrong);
+  color: var(--wrong);
+  animation: shake 0.4s ease;
+}
+.mc-btn.dim {
+  opacity: 0.35;
+}
