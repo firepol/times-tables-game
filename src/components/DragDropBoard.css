@@ -33,7 +33,12 @@
   color: var(--primary);
   cursor: grab;
 }
-.dd-calc:active, .dd-calc.dragging { cursor: grabbing; opacity: 0.6; box-shadow: none; }
+.dd-calc:active { cursor: grabbing; }
+/* When dragging: hide original, only DragOverlay is visible */
+.dd-source-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
 
 .dd-result { background: var(--card-bg); color: var(--text); }
 .dd-result.over { border-color: var(--primary); background: var(--primary-light); transform: scale(1.04); }

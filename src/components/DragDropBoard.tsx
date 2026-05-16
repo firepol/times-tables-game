@@ -21,14 +21,13 @@ interface Props {
 }
 
 function DraggableCalc({ id, label, matched }: { id: string; label: string; matched: boolean }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id })
-  const style = transform ? { transform: `translate(${transform.x}px, ${transform.y}px)` } : undefined
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id })
+  // No transform applied: DragOverlay handles the visual, original stays in place but hidden
   if (matched) return <div className="dd-cell matched" />
   return (
     <div
       ref={setNodeRef}
-      style={style}
-      className={`dd-cell dd-calc ${isDragging ? 'dragging' : ''}`}
+      className={`dd-cell dd-calc ${isDragging ? 'dd-source-hidden' : ''}`}
       {...listeners}
       {...attributes}
     >
