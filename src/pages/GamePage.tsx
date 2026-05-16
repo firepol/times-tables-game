@@ -105,7 +105,7 @@ export default function GamePage() {
       {current.kind === 'drag_block' ? (
         <div className="game-body">
           <p className="game-instruction">Abbina ogni calcolo al risultato!</p>
-          <DragDropBoard pairs={current.pairs} onComplete={handleDragComplete} />
+          <DragDropBoard key={idx} pairs={current.pairs} onComplete={handleDragComplete} />
         </div>
       ) : (
         <div className="game-body">
