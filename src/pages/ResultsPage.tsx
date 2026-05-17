@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSessions } from '../hooks/useSessions'
 import type { Answer, GameSession, SessionMode } from '../types'
+import type { ChallengeCtx } from './GamePage'
 import './ResultsPage.css'
 
 interface LocationState {
@@ -10,6 +11,7 @@ interface LocationState {
   mode: SessionMode
   answers: Answer[]
   durationMs: number
+  challengeCtx?: ChallengeCtx
 }
 
 function formatDuration(ms: number) {
@@ -33,6 +35,7 @@ export default function ResultsPage() {
   const answers = state?.answers ?? []
   const correct = answers.filter((a) => a.correct)
   const wrong = answers.filter((a) => !a.correct)
+  const challengeCtx = state?.challengeCtx
 
   useEffect(() => {
     if (!state) return
@@ -47,9 +50,49 @@ export default function ResultsPage() {
     saveSession(session)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  function handleNextSession() {
+    if (!challengeCtx) return
+    const currentSession = { answers: state.answers, durationMs: state.durationMs }
+    const updatedCtx: ChallengeCtx = {
+      ...challengeCtx,
+      sessionIdx: challengeCtx.sessionIdx + 1,
+      prevSessions: [...challengeCtx.prevSessions, currentSession],
+    }
+    nav('/game', {
+      state: {
+        tables: challengeCtx.config.tables,
+        count: challengeCtx.config.questionsPerSession,
+        mode: challengeCtx.config.mode,
+        timedMode: challengeCtx.config.timedMode,
+        timerSeconds: challengeCtx.config.timerSeconds,
+        challengeCtx: updatedCtx,
+      },
+    })
+  }
+
+  function handleChallengeComplete() {
+    if (!challengeCtx) return
+    const currentSession = { answers: state.answers, durationMs: state.durationMs }
+    const allSessions = [...challengeCtx.prevSessions, currentSession]
+    nav('/challenge/results', {
+      state: { config: challengeCtx.config, sessions: allSessions },
+      replace: true,
+    })
+  }
+
+  const isLastChallengeSession = challengeCtx
+    ? challengeCtx.sessionIdx === challengeCtx.config.sessionCount - 1
+    : false
+
   return (
     <div className="page results-page">
       <div className="results-hero">
+        {challengeCtx && (
+          <div className="challenge-session-badge">
+            {t('challenge.session', { n: challengeCtx.sessionIdx + 1 })}
+            {' / '}{challengeCtx.config.sessionCount}
+          </div>
+        )}
         <div className="results-stars">{stars(correct.length, answers.length)}</div>
         <h1>{t('results.title')}</h1>
         <div className="results-summary">
@@ -90,12 +133,27 @@ export default function ResultsPage() {
         </div>
       )}
 
-      <div style={{ flex: 1 }} />
-
       <div className="results-actions">
-        <button className="btn btn-primary" onClick={() => nav('/play')}>{t('results.playAgain')}</button>
-        <button className="btn btn-ghost" onClick={() => nav('/stats')}>{t('results.stats')}</button>
-        <button className="btn btn-ghost" onClick={() => nav('/')}>{t('results.home')}</button>
+        {challengeCtx ? (
+          isLastChallengeSession ? (
+            <button className="btn btn-primary" onClick={handleChallengeComplete}>
+              {t('challenge.complete')}
+            </button>
+          ) : (
+            <button className="btn btn-primary" onClick={handleNextSession}>
+              {t('challenge.nextSession', {
+                n: challengeCtx.sessionIdx + 2,
+                total: challengeCtx.config.sessionCount,
+              })}
+            </button>
+          )
+        ) : (
+          <>
+            <button className="btn btn-primary" onClick={() => nav('/play')}>{t('results.playAgain')}</button>
+            <button className="btn btn-ghost" onClick={() => nav('/stats')}>{t('results.stats')}</button>
+            <button className="btn btn-ghost" onClick={() => nav('/')}>{t('results.home')}</button>
+          </>
+        )}
       </div>
     </div>
   )

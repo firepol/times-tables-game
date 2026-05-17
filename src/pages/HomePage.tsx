@@ -16,6 +16,9 @@ export default function HomePage() {
         <button className="btn btn-primary home-play-btn" onClick={() => nav('/play')}>
           {t('home.play')}
         </button>
+        <button className="btn btn-secondary" onClick={() => nav('/challenge')}>
+          {t('home.challenge')}
+        </button>
         <button className="btn btn-secondary" onClick={() => nav('/settings')}>
           {t('home.settings')}
         </button>

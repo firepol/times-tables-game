@@ -1,0 +1,68 @@
+.challenge-results-page {
+  background: linear-gradient(160deg, #fef9c3 0%, #f5f3ff 60%, #d1fae5 100%);
+}
+
+.cr-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  text-align: center;
+}
+.cr-trophy { font-size: 3.5rem; animation: pop 0.5s ease; }
+.cr-hero h1 { font-size: 1.6rem; color: var(--primary); margin: 0; }
+
+.cr-total-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 12px 32px;
+  margin-top: 4px;
+}
+.cr-score-num { font-size: 2.8rem; font-weight: 900; line-height: 1; }
+.cr-score-label { font-size: 0.8rem; font-weight: 600; opacity: 0.85; letter-spacing: 0.5px; text-transform: uppercase; }
+
+.cr-sessions { display: flex; flex-direction: column; gap: 10px; }
+.cr-session-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.cr-session-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.cr-session-stars { font-size: 1rem; }
+.cr-session-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.cr-correct { color: var(--correct); font-weight: 600; }
+.cr-pts { color: var(--primary); font-weight: 700; margin-left: auto; }
+
+.cr-score-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+  margin: 0;
+}
+
+.cr-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

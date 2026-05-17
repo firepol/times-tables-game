@@ -6,6 +6,9 @@ import SettingsPage from './pages/SettingsPage'
 import PlaySetupPage from './pages/PlaySetupPage'
 import StatsPage from './pages/StatsPage'
 import SessionDetailPage from './pages/SessionDetailPage'
+import ChallengePage from './pages/ChallengePage'
+import ChallengeConfigPage from './pages/ChallengeConfigPage'
+import ChallengeResultsPage from './pages/ChallengeResultsPage'
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/stats" element={<StatsPage />} />
         <Route path="/stats/:id" element={<SessionDetailPage />} />
+        <Route path="/challenge" element={<ChallengePage />} />
+        <Route path="/challenge/config" element={<ChallengeConfigPage />} />
+        <Route path="/challenge/results" element={<ChallengeResultsPage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,8 +1,50 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '../hooks/useSettings'
 import type { SessionMode } from '../types'
 import './SettingsPage.css'
+
+function TimerStepper({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+
+  const commit = (raw: string) => {
+    const n = parseInt(raw, 10)
+    if (!isNaN(n)) onChange(Math.max(1, Math.min(99, n)))
+    setEditing(false)
+  }
+
+  if (editing) {
+    return (
+      <div className="timer-stepper">
+        <button className="stepper-btn" onClick={() => { commit(draft); onChange(Math.max(1, value - 1)) }}>−</button>
+        <input
+          className="stepper-input"
+          type="number"
+          min={1}
+          max={99}
+          autoFocus
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={() => commit(draft)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') commit(draft) }}
+        />
+        <button className="stepper-btn" onClick={() => { commit(draft); onChange(Math.min(99, value + 1)) }}>+</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="timer-stepper">
+      <button className="stepper-btn" onClick={() => onChange(Math.max(1, value - 1))}>−</button>
+      <button className="stepper-value" onClick={() => { setDraft(String(value)); setEditing(true) }}>
+        {value}s
+      </button>
+      <button className="stepper-btn" onClick={() => onChange(Math.min(99, value + 1))}>+</button>
+    </div>
+  )
+}
 
 const PRESET_KEYS = [
   { key: 'easy',   tables: [2, 5] },
@@ -105,17 +147,7 @@ export default function SettingsPage() {
         {settings.timedMode && (
           <div className="timer-picker">
             <p className="timer-label">{t('settings.secondsPerQuestion', { n: settings.timerSeconds })}</p>
-            <div className="timer-buttons">
-              {[2, 3, 4, 5, 6].map((s) => (
-                <button
-                  key={s}
-                  className={`count-btn ${settings.timerSeconds === s ? 'active' : ''}`}
-                  onClick={() => setTimerSeconds(s)}
-                >
-                  {s}s
-                </button>
-              ))}
-            </div>
+            <TimerStepper value={settings.timerSeconds} onChange={setTimerSeconds} />
           </div>
         )}
       </div>

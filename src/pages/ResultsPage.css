@@ -66,3 +66,13 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.challenge-session-badge {
+  background: var(--primary);
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}

@@ -39,6 +39,31 @@ export interface AppSettings {
   questionsPerSession: number
   sessionMode: SessionMode
   timedMode: boolean
-  timerSeconds: number  // 2–6, default 4
+  timerSeconds: number  // 1–99, default 4
   language: 'en' | 'it'
+}
+
+export interface ChallengeConfig {
+  id: string
+  name: string
+  tables: number[]
+  questionsPerSession: number
+  sessionCount: number
+  mode: SessionMode
+  timedMode: boolean
+  timerSeconds: number
+}
+
+export interface ChallengeSession {
+  answers: Answer[]
+  durationMs: number
+}
+
+export interface ChallengeRun {
+  id: string
+  configId: string
+  config: ChallengeConfig
+  date: string
+  sessions: ChallengeSession[]
+  totalScore: number
 }

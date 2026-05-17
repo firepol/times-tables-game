@@ -2,12 +2,18 @@ import { useRef, useState, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { buildSession } from '../engine/questionGenerator'
-import type { Answer, SessionItem, SessionMode } from '../types'
+import type { Answer, SessionItem, SessionMode, ChallengeConfig, ChallengeSession } from '../types'
 import NumberPad from '../components/NumberPad'
 import MultipleChoice from '../components/MultipleChoice'
 import DragDropBoard from '../components/DragDropBoard'
 import CountdownBar from '../components/CountdownBar'
 import './GamePage.css'
+
+export interface ChallengeCtx {
+  config: ChallengeConfig
+  sessionIdx: number
+  prevSessions: ChallengeSession[]
+}
 
 interface LocationState {
   tables: number[]
@@ -16,6 +22,7 @@ interface LocationState {
   focusCalcKeys?: string[]
   timedMode?: boolean
   timerSeconds?: number
+  challengeCtx?: ChallengeCtx
 }
 
 type FeedbackState = 'idle' | 'correct' | 'wrong'
@@ -64,6 +71,7 @@ export default function GamePage() {
           mode: state?.mode ?? 'mixed',
           answers: answersRef.current,
           durationMs: Date.now() - startTimeRef.current,
+          challengeCtx: state?.challengeCtx,
         },
         replace: true,
       })

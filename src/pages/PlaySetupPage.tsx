@@ -76,8 +76,6 @@ export default function PlaySetupPage() {
         </div>
       )}
 
-      <div style={{ flex: 1 }} />
-
       <button className="btn btn-primary" onClick={() => start()}>
         {t('play.start')}
       </button>

@@ -10,7 +10,7 @@ const DEFAULTS: AppSettings = {
   questionsPerSession: 15,
   sessionMode: 'mixed',
   timedMode: true,
-  timerSeconds: 3,
+  timerSeconds: 4,
   language: (i18n.language?.startsWith('it') ? 'it' : 'en') as 'en' | 'it',
 }
 
@@ -51,7 +51,7 @@ export function useSettings() {
   const setQuestionsPerSession = useCallback((n: number) => save({ questionsPerSession: n }), [save])
   const setSessionMode = useCallback((mode: SessionMode) => save({ sessionMode: mode }), [save])
   const setTimedMode = useCallback((on: boolean) => save({ timedMode: on }), [save])
-  const setTimerSeconds = useCallback((s: number) => save({ timerSeconds: Math.max(2, Math.min(6, s)) }), [save])
+  const setTimerSeconds = useCallback((s: number) => save({ timerSeconds: Math.max(1, Math.min(99, s)) }), [save])
 
   const setLanguage = useCallback((lang: 'en' | 'it') => {
     i18n.changeLanguage(lang)
