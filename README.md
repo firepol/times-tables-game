@@ -1,46 +1,61 @@
-# Tabelline PWA
+# Times Tables Game
 
-Impara le tabelline giocando — Progressive Web App per bambini.
+A Progressive Web App (PWA) for children to practice multiplication tables (×1–×9).
 
-## Sviluppo locale
+[![Deploy to GitHub Pages](https://github.com/firepol/times-tables-game/actions/workflows/deploy.yml/badge.svg)](https://github.com/firepol/times-tables-game/actions/workflows/deploy.yml)
+
+## Features
+
+- **4 game modes**: drag & drop, multiple choice, typed answer, missing factor (6 × ? = 24)
+- **Mixed mode**: one session combining all modes
+- **Timed challenge**: optional per-question countdown (2–6 s), configurable in settings
+- **Statistics**: session history with per-type error breakdown (typed / MC / drag)
+- **Smart training**: "Train weak calculations" suggests the most-missed multiplications from recent sessions
+- **English + Italian**: language auto-detected from browser, switchable in settings
+- **Installable PWA**: works offline, can be added to the home screen on Android/iOS
+
+## Live demo
+
+[https://firepol.github.io/times-tables-game/](https://firepol.github.io/times-tables-game/)
+
+## Local development
 
 ```bash
 npm install
-npm run dev
+npm run dev        # dev server at http://localhost:5173
 ```
 
-Apri [http://localhost:5173](http://localhost:5173) nel browser.
-
-## Build
+## Tests
 
 ```bash
-npm run build
-npm run preview
+NODE_ENV=test npm test    # 30 unit tests (vitest)
 ```
 
-## Deploy su Vercel
+## Deploy
 
-Il file `vercel.json` configura il rewrite SPA: tutte le route vengono reindirizzate a `index.html`.
+To deploy this app for free on GitHub Pages, follow the instructions in [DEPLOY.md](DEPLOY.md).
 
-```bash
-vercel deploy
-```
+## Tech stack
 
-## Struttura progetto
+- [Vite](https://vite.dev/) + [React 19](https://react.dev/) + TypeScript
+- [react-router-dom v7](https://reactrouter.com/) for routing
+- [@dnd-kit](https://dndkit.com/) for touch-native drag & drop
+- [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) for service worker and PWA manifest
+- [react-i18next](https://react.i18next.com/) for EN/IT translations
+- [vitest](https://vitest.dev/) for unit tests
+
+## Project structure
 
 ```
 src/
-  components/   # Componenti riusabili
-  pages/        # Pagine (HomePage, GamePage, ResultsPage, SettingsPage)
-  hooks/        # Custom React hooks
-  engine/       # Logica di gioco (generazione domande, scoring)
-  types/        # Cartella riservata (tipi condivisi in src/types.ts)
-  types.ts      # Interfacce TypeScript
+  components/   # Reusable UI components (NumberPad, MultipleChoice, DragDropBoard, CountdownBar)
+  pages/        # Pages (HomePage, GamePage, ResultsPage, SettingsPage, StatsPage, …)
+  hooks/        # Custom React hooks (useSettings, useSessions, useWeakCalcs)
+  engine/       # Game logic (question generation, scoring, distractors)
+  i18n/         # EN + IT translation strings
+  types.ts      # Shared TypeScript interfaces
 ```
 
-## Stack
+## License
 
-- [Vite](https://vite.dev/) + [React](https://react.dev/) + TypeScript
-- [react-router-dom](https://reactrouter.com/) per il routing
-- [@dnd-kit](https://dndkit.com/) per drag & drop
-- [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) per service worker e manifest
+[MIT](LICENSE)
