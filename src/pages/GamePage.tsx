@@ -198,7 +198,7 @@ export default function GamePage() {
                 />
               ) : (
                 <NumberPad
-                  maxDigits={2}
+                  maxDigits={current.question.a * current.question.b < 10 ? 1 : 2}
                   onSubmit={(v) =>
                     handleSingleAnswer(v, current.question.a * current.question.b, current.question.a, current.question.b, 'classic_typed')
                   }

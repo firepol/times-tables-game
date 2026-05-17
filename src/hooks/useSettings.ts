@@ -8,8 +8,8 @@ const DEFAULTS: AppSettings = {
   selectedTables: [2, 3, 4, 5, 6, 7, 8, 9],
   questionsPerSession: 15,
   sessionMode: 'mixed',
-  timedMode: false,
-  timerSeconds: 4,
+  timedMode: true,
+  timerSeconds: 3,
   language: (i18n.language?.startsWith('it') ? 'it' : 'en') as 'en' | 'it',
 }
 

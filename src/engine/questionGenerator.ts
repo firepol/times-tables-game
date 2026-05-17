@@ -12,7 +12,7 @@ export function shuffle<T>(arr: T[]): T[] {
 function buildPool(tables: number[]): Array<{ a: number; b: number }> {
   const pool: Array<{ a: number; b: number }> = []
   for (const a of tables) {
-    for (let b = 1; b <= 9; b++) {
+    for (let b = 2; b <= 9; b++) {  // skip ×1 — too trivial
       pool.push({ a, b })
     }
   }
