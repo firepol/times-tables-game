@@ -84,6 +84,11 @@ a { color: inherit; text-decoration: none; }
   color: var(--primary);
   border: 2px solid var(--primary);
 }
+.btn-danger {
+  background: var(--card-bg);
+  color: var(--wrong);
+  border: 2px solid var(--wrong);
+}
 .btn-ghost {
   background: transparent;
   color: var(--text-muted);

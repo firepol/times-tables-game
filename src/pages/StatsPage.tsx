@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSessions } from '../hooks/useSessions'
@@ -59,9 +59,16 @@ function CalcErrorBar({ calcKey, sessions, lastN }: { calcKey: string; sessions:
 export default function StatsPage() {
   const nav = useNavigate()
   const { t } = useTranslation()
-  const { sessions } = useSessions()
+  const { sessions, clearSessions } = useSessions()
   const [lastN, setLastN] = useState(10)
   const weakCalcs = useWeakCalcs(sessions, lastN)
+
+  const handleReset = useCallback(() => {
+    if (window.confirm(t('stats.resetConfirm'))) {
+      clearSessions()
+      setLastN(10)
+    }
+  }, [clearSessions, t])
 
   const recent = sessions.slice(-lastN).reverse()
 
@@ -129,6 +136,12 @@ export default function StatsPage() {
           </div>
         )}
       </div>
+
+      {sessions.length > 0 && (
+        <button className="btn btn-danger" onClick={handleReset}>
+          {t('stats.reset')}
+        </button>
+      )}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { buildSession } from '../engine/questionGenerator'
 import type { Answer, SessionItem, SessionMode } from '../types'
 import NumberPad from '../components/NumberPad'
@@ -21,6 +22,7 @@ type FeedbackState = 'idle' | 'correct' | 'wrong'
 
 export default function GamePage() {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const { state } = useLocation() as { state: LocationState }
 
   const [items] = useState<SessionItem[]>(() =>
@@ -122,8 +124,8 @@ export default function GamePage() {
   if (!items.length) {
     return (
       <div className="page">
-        <p>No questions available. Check your settings.</p>
-        <button className="btn btn-primary" onClick={() => nav('/')}>Home</button>
+        <p>{t('game.noQuestions')}</p>
+        <button className="btn btn-primary" onClick={() => nav('/')}>{t('results.home')}</button>
       </div>
     )
   }
@@ -147,7 +149,7 @@ export default function GamePage() {
 
       {current.kind === 'drag_block' ? (
         <div className="game-body">
-          <p className="game-instruction">Match each calculation to its result!</p>
+          <p className="game-instruction">{t('game.matchInstruction')}</p>
           <DragDropBoard
             key={idx}
             pairs={current.pairs}

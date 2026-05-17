@@ -79,6 +79,8 @@ export default {
     noSessions: 'No sessions yet. Play the first one!',
     questions: '{{n}} q',
     errors: '{{n}} err',
+    reset: '🗑 Reset statistics',
+    resetConfirm: 'This will delete all session history and error data. Are you sure?',
   },
   // SessionDetailPage
   sessionDetail: {

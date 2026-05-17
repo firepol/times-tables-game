@@ -73,6 +73,8 @@ export default {
     noSessions: 'Nessuna sessione ancora. Gioca la prima!',
     questions: '{{n}} dom',
     errors: '{{n}} err',
+    reset: '🗑 Azzera statistiche',
+    resetConfirm: 'Verranno eliminate tutte le sessioni e i dati sugli errori. Sei sicuro?',
   },
   sessionDetail: {
     notFound: 'Sessione non trovata',
