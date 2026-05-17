@@ -59,3 +59,10 @@
   box-shadow: 0 3px 0 var(--primary-dark);
 }
 .numpad-ok:active { box-shadow: none; }
+
+@media (max-height: 680px) {
+  .numpad { gap: 8px; }
+  .numpad-display { min-height: 52px; padding: 10px; font-size: 2rem; }
+  .numpad-grid { gap: 6px; }
+  .numpad-key { height: 50px; font-size: 1.3rem; }
+}

@@ -33,7 +33,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
 }
 
 .game-instruction {
@@ -88,4 +88,11 @@
   font-size: 0.9rem;
   color: var(--text-muted);
   font-weight: 600;
+}
+
+@media (max-height: 680px) {
+  .game-body { gap: 8px; }
+  .question-card { padding: 14px 16px; }
+  .question-formula { font-size: 1.8rem; }
+  .game-instruction { font-size: 0.95rem; }
 }

@@ -131,6 +131,13 @@ export default function DragDropBoard({ pairs, onComplete, timeLimit }: Props) {
     } else {
       setFlash((f) => ({ ...f, [dropKey]: 'wrong' }))
       pendingAnswers.current = [...pendingAnswers.current, answer]
+      // Lock out this calc so it can't be dragged again after a wrong drop
+      const newMatched = new Set(matched).add(calcKey)
+      setMatched(newMatched)
+      if (newMatched.size === pairs.length) {
+        const final = pendingAnswers.current
+        setTimeout(() => finishBlock(final), 600)
+      }
       if (navigator.vibrate) navigator.vibrate([80, 40, 80])
     }
     setTimeout(() => setFlash((f) => { const n = { ...f }; delete n[dropKey]; return n }), 500)
