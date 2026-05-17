@@ -11,9 +11,9 @@ const MODE_VALUES: SessionMode[] = ['mixed', 'drag_drop', 'multiple_choice', 'ty
 function Stepper({ value, min, max, onChange }: { value: number; min: number; max: number; onChange: (n: number) => void }) {
   return (
     <div className="timer-stepper">
-      <button className="stepper-btn" onClick={() => onChange(Math.max(min, value - 1))}>−</button>
-      <span className="stepper-value" style={{ pointerEvents: 'none' }}>{value}</span>
-      <button className="stepper-btn" onClick={() => onChange(Math.min(max, value + 1))}>+</button>
+      <button type="button" className="stepper-btn" onClick={() => onChange(Math.max(min, value - 1))}>−</button>
+      <button type="button" className="stepper-value" disabled>{value}</button>
+      <button type="button" className="stepper-btn" onClick={() => onChange(Math.min(max, value + 1))}>+</button>
     </div>
   )
 }
@@ -144,9 +144,9 @@ export default function ChallengeConfigPage() {
           <div className="timer-picker">
             <p className="timer-label">{t('settings.secondsPerQuestion', { n: timerSeconds })}</p>
             <div className="timer-stepper">
-              <button className="stepper-btn" onClick={() => setTimerSeconds((v) => Math.max(1, v - 1))}>−</button>
-              <span className="stepper-value" style={{ pointerEvents: 'none' }}>{timerSeconds}s</span>
-              <button className="stepper-btn" onClick={() => setTimerSeconds((v) => Math.min(99, v + 1))}>+</button>
+              <button type="button" className="stepper-btn" onClick={() => setTimerSeconds((v) => Math.max(1, v - 1))}>−</button>
+              <button type="button" className="stepper-value" disabled>{timerSeconds}s</button>
+              <button type="button" className="stepper-btn" onClick={() => setTimerSeconds((v) => Math.min(99, v + 1))}>+</button>
             </div>
           </div>
         )}
