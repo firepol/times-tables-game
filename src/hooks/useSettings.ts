@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import i18n from '../i18n'
 import type { AppSettings, SessionMode } from '../types'
+import { applyManifestLocale } from '../manifest'
 
 const KEY = 'tabelline_settings'
 
@@ -54,6 +55,7 @@ export function useSettings() {
 
   const setLanguage = useCallback((lang: 'en' | 'it') => {
     i18n.changeLanguage(lang)
+    applyManifestLocale(lang)
     save({ language: lang })
   }, [save])
 

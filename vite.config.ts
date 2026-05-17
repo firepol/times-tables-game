@@ -13,30 +13,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/*.png'],
-      manifest: {
-        name: 'Times Tables Game',
-        short_name: 'Times Tables',
-        description: 'Practice multiplication tables — a PWA for children',
-        theme_color: '#4f46e5',
-        background_color: '#ffffff',
-        display: 'standalone',
-        start_url: base,
-        icons: [
-          {
-            src: 'icons/icon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'icons/icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-        ],
-      },
+      includeAssets: ['favicon.svg', 'icons/*.png', 'manifest-en.webmanifest', 'manifest-it.webmanifest'],
+      // Manifest is provided as static files in public/ (manifest-en.webmanifest, manifest-it.webmanifest)
+      // so the app can swap to the locale-appropriate one at runtime.
+      manifest: false,
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webmanifest}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
