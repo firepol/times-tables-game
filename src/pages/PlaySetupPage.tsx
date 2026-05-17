@@ -1,20 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSettings } from '../hooks/useSettings'
 import { useSessions } from '../hooks/useSessions'
 import { useWeakCalcs } from '../hooks/useWeakCalcs'
 import type { SessionMode } from '../types'
 import './PlaySetupPage.css'
 
-const MODES: Array<{ value: SessionMode; label: string }> = [
-  { value: 'mixed', label: '★ Mista' },
-  { value: 'drag_drop', label: '↔ Drag & Drop' },
-  { value: 'multiple_choice', label: '◉ Scelta Multipla' },
-  { value: 'typed', label: '✎ Scrivi risultato' },
-]
+const MODE_VALUES: SessionMode[] = ['mixed', 'drag_drop', 'multiple_choice', 'typed']
 
 export default function PlaySetupPage() {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const { settings } = useSettings()
   const { sessions } = useSessions()
   const weakCalcs = useWeakCalcs(sessions)
@@ -39,26 +36,26 @@ export default function PlaySetupPage() {
     <div className="page">
       <div className="page-header">
         <button className="back-btn" onClick={() => nav('/')}>←</button>
-        <h2>Inizia sessione</h2>
+        <h2>{t('play.title')}</h2>
       </div>
 
       <div className="card setup-info">
-        <span className="setup-label">Tabelle</span>
+        <span className="setup-label">{t('play.tables')}</span>
         <span className="setup-value">{settings.selectedTables.join(', ')}</span>
-        <span className="setup-label">Domande</span>
+        <span className="setup-label">{t('play.questions')}</span>
         <span className="setup-value">{settings.questionsPerSession}</span>
       </div>
 
       <div className="card">
-        <p className="settings-section-title">Modalità</p>
+        <p className="settings-section-title">{t('play.mode')}</p>
         <div className="mode-chips">
-          {MODES.map((m) => (
+          {MODE_VALUES.map((v) => (
             <button
-              key={m.value}
-              className={`mode-chip ${mode === m.value ? 'active' : ''}`}
-              onClick={() => setMode(m.value)}
+              key={v}
+              className={`mode-chip ${mode === v ? 'active' : ''}`}
+              onClick={() => setMode(v)}
             >
-              {m.label}
+              {t(`play.modes.${v}`)}
             </button>
           ))}
         </div>
@@ -66,7 +63,7 @@ export default function PlaySetupPage() {
 
       {top3.length > 0 && (
         <div className="card hint-card">
-          <p className="hint-title">💡 Hai degli errori frequenti:</p>
+          <p className="hint-title">{t('play.weakHint')}</p>
           <p className="hint-calcs">
             {top3.map((k) => {
               const [a, b] = k.split('x')
@@ -74,7 +71,7 @@ export default function PlaySetupPage() {
             }).join('  •  ')}
           </p>
           <button className="btn btn-secondary hint-btn" onClick={() => start(weakCalcs)}>
-            Allena questi calcoli
+            {t('play.trainWeak')}
           </button>
         </div>
       )}
@@ -82,7 +79,7 @@ export default function PlaySetupPage() {
       <div style={{ flex: 1 }} />
 
       <button className="btn btn-primary" onClick={() => start()}>
-        ▶ Inizia
+        {t('play.start')}
       </button>
     </div>
   )

@@ -28,16 +28,30 @@ export default function GamePage() {
   )
   const [idx, setIdx] = useState(0)
   const [feedback, setFeedback] = useState<FeedbackState>('idle')
-  const [answers, setAnswers] = useState<Answer[]>([])
+  // answersRef is the source of truth; answeredCount is just for UI display
+  const answersRef = useRef<Answer[]>([])
+  const [answeredCount, setAnsweredCount] = useState(0)
   const startTimeRef = useRef(Date.now())
   const qStartRef = useRef(Date.now())
 
   const timedMode = state?.timedMode ?? false
   const timerSeconds = state?.timerSeconds ?? 4
+  // answeredRef: set synchronously when an answer is submitted, guards the timer race condition
+  const answeredRef = useRef(false)
   const timedOutRef = useRef(false)
 
   const totalItems = items.length
   const current = items[idx]
+
+  const addAnswer = useCallback((answer: Answer) => {
+    answersRef.current = [...answersRef.current, answer]
+    setAnsweredCount(answersRef.current.length)
+  }, [])
+
+  const addAnswers = useCallback((newAnswers: Answer[]) => {
+    answersRef.current = [...answersRef.current, ...newAnswers]
+    setAnsweredCount(answersRef.current.length)
+  }, [])
 
   const advance = useCallback(() => {
     const nextIdx = idx + 1
@@ -46,7 +60,7 @@ export default function GamePage() {
         state: {
           tables: state?.tables ?? [],
           mode: state?.mode ?? 'mixed',
-          answers,
+          answers: answersRef.current,
           durationMs: Date.now() - startTimeRef.current,
         },
         replace: true,
@@ -54,13 +68,17 @@ export default function GamePage() {
     } else {
       setIdx(nextIdx)
       setFeedback('idle')
+      answeredRef.current = false
       timedOutRef.current = false
       qStartRef.current = Date.now()
     }
-  }, [idx, totalItems, answers, nav, state])
+  }, [idx, totalItems, nav, state])
 
   const handleSingleAnswer = useCallback((userAnswer: number, correctAnswer: number, a: number, b: number, type: Answer['questionType']) => {
     if (feedback !== 'idle') return
+    // Set synchronously before any state changes — guards against the timer race condition
+    // where onExpire fires asynchronously before React re-renders with new feedback state
+    answeredRef.current = true
     const correct = userAnswer === correctAnswer
     const answer: Answer = {
       question: { a, b },
@@ -70,19 +88,21 @@ export default function GamePage() {
       correctAnswer,
       timeMs: Date.now() - qStartRef.current,
     }
-    setAnswers((prev) => [...prev, answer])
+    addAnswer(answer)
     setFeedback(correct ? 'correct' : 'wrong')
     if (navigator.vibrate) navigator.vibrate(correct ? 50 : [80, 40, 80])
     setTimeout(advance, correct ? 600 : 1200)
-  }, [feedback, advance])
+  }, [feedback, advance, addAnswer])
 
   const handleDragComplete = useCallback((blockAnswers: Answer[]) => {
-    setAnswers((prev) => [...prev, ...blockAnswers])
+    addAnswers(blockAnswers)
     setTimeout(advance, 300)
-  }, [advance])
+  }, [advance, addAnswers])
 
   const handleSingleTimeout = useCallback(() => {
-    if (feedback !== 'idle' || timedOutRef.current) return
+    // Use refs (not stale closure state) to guard against the race condition where
+    // the timer fires via setTimeout just as the user submits an answer
+    if (answeredRef.current || timedOutRef.current) return
     timedOutRef.current = true
     const q = (items[idx] as { kind: 'single'; question: { a: number; b: number; type: Answer['questionType'] } }).question
     const answer: Answer = {
@@ -93,23 +113,20 @@ export default function GamePage() {
       correctAnswer: q.type === 'missing_factor' ? q.b : q.a * q.b,
       timeMs: timerSeconds * 1000,
     }
-    setAnswers((prev) => [...prev, answer])
+    addAnswer(answer)
     setFeedback('wrong')
     if (navigator.vibrate) navigator.vibrate([80, 40, 80])
     setTimeout(advance, 1200)
-  }, [feedback, items, idx, timerSeconds, advance])
+  }, [items, idx, timerSeconds, advance, addAnswer])
 
   if (!items.length) {
     return (
       <div className="page">
-        <p>Nessuna domanda disponibile. Controlla le impostazioni.</p>
+        <p>No questions available. Check your settings.</p>
         <button className="btn btn-primary" onClick={() => nav('/')}>Home</button>
       </div>
     )
   }
-
-  // Count answered questions (drag blocks count as multiple)
-  const answeredCount = answers.length
 
   return (
     <div className="page game-page">
@@ -130,7 +147,7 @@ export default function GamePage() {
 
       {current.kind === 'drag_block' ? (
         <div className="game-body">
-          <p className="game-instruction">Abbina ogni calcolo al risultato!</p>
+          <p className="game-instruction">Match each calculation to its result!</p>
           <DragDropBoard
             key={idx}
             pairs={current.pairs}

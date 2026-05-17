@@ -40,4 +40,5 @@ export interface AppSettings {
   sessionMode: SessionMode
   timedMode: boolean
   timerSeconds: number  // 2–6, default 4
+  language: 'en' | 'it'
 }

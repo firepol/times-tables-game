@@ -1,60 +1,62 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSettings } from '../hooks/useSettings'
 import type { SessionMode } from '../types'
 import './SettingsPage.css'
 
-const PRESETS: Array<{ label: string; tables: number[] }> = [
-  { label: 'Facili', tables: [2, 5] },
-  { label: 'Medie', tables: [3, 4, 6] },
-  { label: 'Difficili', tables: [7, 8, 9] },
-  { label: 'Tutte', tables: [2, 3, 4, 5, 6, 7, 8, 9] },
-]
+const PRESET_KEYS = [
+  { key: 'easy',   tables: [2, 5] },
+  { key: 'medium', tables: [3, 4, 6] },
+  { key: 'hard',   tables: [7, 8, 9] },
+  { key: 'all',    tables: [2, 3, 4, 5, 6, 7, 8, 9] },
+] as const
 
-const MODES: Array<{ value: SessionMode; label: string }> = [
-  { value: 'mixed', label: '★ Mista (consigliata)' },
-  { value: 'drag_drop', label: '↔ Solo Drag & Drop' },
-  { value: 'multiple_choice', label: '◉ Solo Scelta Multipla' },
-  { value: 'typed', label: '✎ Solo Scrivi risultato' },
+const MODE_KEYS: Array<{ value: SessionMode }> = [
+  { value: 'mixed' },
+  { value: 'drag_drop' },
+  { value: 'multiple_choice' },
+  { value: 'typed' },
 ]
 
 export default function SettingsPage() {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const {
     settings, toggleTable, setTables, setQuestionsPerSession,
-    setSessionMode, setTimedMode, setTimerSeconds,
+    setSessionMode, setTimedMode, setTimerSeconds, setLanguage,
   } = useSettings()
 
   return (
     <div className="page">
       <div className="page-header">
         <button className="back-btn" onClick={() => nav('/')}>←</button>
-        <h2>Impostazioni</h2>
+        <h2>{t('settings.title')}</h2>
       </div>
 
       <div className="card">
-        <p className="settings-section-title">Tabelle da allenare</p>
+        <p className="settings-section-title">{t('settings.tables')}</p>
         <div className="table-grid">
-          {[2, 3, 4, 5, 6, 7, 8, 9].map((t) => (
+          {[2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
             <button
-              key={t}
-              className={`table-btn ${settings.selectedTables.includes(t) ? 'active' : ''}`}
-              onClick={() => toggleTable(t)}
+              key={n}
+              className={`table-btn ${settings.selectedTables.includes(n) ? 'active' : ''}`}
+              onClick={() => toggleTable(n)}
             >
-              {t}
+              {n}
             </button>
           ))}
         </div>
         <div className="preset-row">
-          {PRESETS.map((p) => (
-            <button key={p.label} className="preset-btn" onClick={() => setTables(p.tables)}>
-              {p.label}
+          {PRESET_KEYS.map((p) => (
+            <button key={p.key} className="preset-btn" onClick={() => setTables([...p.tables])}>
+              {t(`settings.presets.${p.key}`)}
             </button>
           ))}
         </div>
       </div>
 
       <div className="card">
-        <p className="settings-section-title">Domande per sessione</p>
+        <p className="settings-section-title">{t('settings.questionsPerSession')}</p>
         <div className="count-row">
           {[10, 15, 20].map((n) => (
             <button
@@ -69,9 +71,9 @@ export default function SettingsPage() {
       </div>
 
       <div className="card">
-        <p className="settings-section-title">Modalità di gioco</p>
+        <p className="settings-section-title">{t('settings.gameMode')}</p>
         <div className="mode-list">
-          {MODES.map((m) => (
+          {MODE_KEYS.map((m) => (
             <label key={m.value} className="mode-option">
               <input
                 type="radio"
@@ -79,7 +81,7 @@ export default function SettingsPage() {
                 checked={settings.sessionMode === m.value}
                 onChange={() => setSessionMode(m.value)}
               />
-              <span>{m.label}</span>
+              <span>{t(`settings.modes.${m.value}`)}</span>
             </label>
           ))}
         </div>
@@ -88,21 +90,21 @@ export default function SettingsPage() {
       <div className="card">
         <div className="timed-header">
           <div>
-            <p className="settings-section-title" style={{ marginBottom: 2 }}>⏱ Sfida a tempo</p>
-            <p className="timed-desc">Ogni calcolo ha un timer. Scaduto = sbagliato.</p>
+            <p className="settings-section-title" style={{ marginBottom: 2 }}>{t('settings.timedChallenge')}</p>
+            <p className="timed-desc">{t('settings.timedDesc')}</p>
           </div>
           <button
             className={`toggle-btn ${settings.timedMode ? 'on' : ''}`}
             onClick={() => setTimedMode(!settings.timedMode)}
-            aria-label="Attiva sfida a tempo"
+            aria-label="Toggle timed challenge"
           >
-            {settings.timedMode ? 'ON' : 'OFF'}
+            {settings.timedMode ? t('settings.on') : t('settings.off')}
           </button>
         </div>
 
         {settings.timedMode && (
           <div className="timer-picker">
-            <p className="timer-label">Secondi per calcolo: <strong>{settings.timerSeconds}s</strong></p>
+            <p className="timer-label">{t('settings.secondsPerQuestion', { n: settings.timerSeconds })}</p>
             <div className="timer-buttons">
               {[2, 3, 4, 5, 6].map((s) => (
                 <button
@@ -114,9 +116,23 @@ export default function SettingsPage() {
                 </button>
               ))}
             </div>
-            <p className="timer-hint">Per drag & drop: N calcoli × {settings.timerSeconds}s = tempo totale blocco</p>
           </div>
         )}
+      </div>
+
+      <div className="card">
+        <p className="settings-section-title">{t('settings.language')}</p>
+        <div className="count-row">
+          {(['en', 'it'] as const).map((lang) => (
+            <button
+              key={lang}
+              className={`count-btn ${settings.language === lang ? 'active' : ''}`}
+              onClick={() => setLanguage(lang)}
+            >
+              {lang === 'en' ? '🇬🇧 EN' : '🇮🇹 IT'}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   )

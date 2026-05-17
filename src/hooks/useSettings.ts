@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import i18n from '../i18n'
 import type { AppSettings, SessionMode } from '../types'
 
 const KEY = 'tabelline_settings'
@@ -9,6 +10,7 @@ const DEFAULTS: AppSettings = {
   sessionMode: 'mixed',
   timedMode: false,
   timerSeconds: 4,
+  language: (i18n.language?.startsWith('it') ? 'it' : 'en') as 'en' | 'it',
 }
 
 function load(): AppSettings {
@@ -44,25 +46,19 @@ export function useSettings() {
     })
   }, [])
 
-  const setTables = useCallback((tables: number[]) => {
-    save({ selectedTables: tables })
+  const setTables = useCallback((tables: number[]) => save({ selectedTables: tables }), [save])
+  const setQuestionsPerSession = useCallback((n: number) => save({ questionsPerSession: n }), [save])
+  const setSessionMode = useCallback((mode: SessionMode) => save({ sessionMode: mode }), [save])
+  const setTimedMode = useCallback((on: boolean) => save({ timedMode: on }), [save])
+  const setTimerSeconds = useCallback((s: number) => save({ timerSeconds: Math.max(2, Math.min(6, s)) }), [save])
+
+  const setLanguage = useCallback((lang: 'en' | 'it') => {
+    i18n.changeLanguage(lang)
+    save({ language: lang })
   }, [save])
 
-  const setQuestionsPerSession = useCallback((n: number) => {
-    save({ questionsPerSession: n })
-  }, [save])
-
-  const setSessionMode = useCallback((mode: SessionMode) => {
-    save({ sessionMode: mode })
-  }, [save])
-
-  const setTimedMode = useCallback((on: boolean) => {
-    save({ timedMode: on })
-  }, [save])
-
-  const setTimerSeconds = useCallback((s: number) => {
-    save({ timerSeconds: Math.max(2, Math.min(6, s)) })
-  }, [save])
-
-  return { settings, toggleTable, setTables, setQuestionsPerSession, setSessionMode, setTimedMode, setTimerSeconds }
+  return {
+    settings, toggleTable, setTables, setQuestionsPerSession,
+    setSessionMode, setTimedMode, setTimerSeconds, setLanguage,
+  }
 }

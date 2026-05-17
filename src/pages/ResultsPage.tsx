@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSessions } from '../hooks/useSessions'
 import type { Answer, GameSession, SessionMode } from '../types'
 import './ResultsPage.css'
@@ -25,6 +26,7 @@ function stars(correct: number, total: number) {
 
 export default function ResultsPage() {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const { state } = useLocation() as { state: LocationState }
   const { saveSession } = useSessions()
 
@@ -49,26 +51,26 @@ export default function ResultsPage() {
     <div className="page results-page">
       <div className="results-hero">
         <div className="results-stars">{stars(correct.length, answers.length)}</div>
-        <h1>Sessione completata!</h1>
+        <h1>{t('results.title')}</h1>
         <div className="results-summary">
           <div className="results-stat correct-stat">
             <span className="stat-num">{correct.length}</span>
-            <span className="stat-label">corrette</span>
+            <span className="stat-label">{t('results.correct')}</span>
           </div>
           <div className="results-stat wrong-stat">
             <span className="stat-num">{wrong.length}</span>
-            <span className="stat-label">sbagliate</span>
+            <span className="stat-label">{t('results.wrong')}</span>
           </div>
           <div className="results-stat time-stat">
             <span className="stat-num">{formatDuration(state?.durationMs ?? 0)}</span>
-            <span className="stat-label">durata</span>
+            <span className="stat-label">{t('results.duration')}</span>
           </div>
         </div>
       </div>
 
       {wrong.length > 0 && (
         <div className="card">
-          <p className="results-section-title">Hai sbagliato:</p>
+          <p className="results-section-title">{t('results.mistakesTitle')}</p>
           <div className="wrong-list">
             {wrong.map((a, i) => (
               <div key={i} className="wrong-item">
@@ -78,7 +80,9 @@ export default function ResultsPage() {
                     : `${a.question.a} × ${a.question.b}`}
                 </span>
                 <span className="wrong-detail">
-                  hai risposto {a.userAnswer} (corretto: {a.correctAnswer})
+                  {a.userAnswer === -1
+                    ? t('results.youAnsweredTimeout')
+                    : t('results.youAnswered', { got: a.userAnswer, expected: a.correctAnswer })}
                 </span>
               </div>
             ))}
@@ -89,9 +93,9 @@ export default function ResultsPage() {
       <div style={{ flex: 1 }} />
 
       <div className="results-actions">
-        <button className="btn btn-primary" onClick={() => nav('/play')}>▶ Gioca ancora</button>
-        <button className="btn btn-ghost" onClick={() => nav('/stats')}>📊 Statistiche</button>
-        <button className="btn btn-ghost" onClick={() => nav('/')}>🏠 Home</button>
+        <button className="btn btn-primary" onClick={() => nav('/play')}>{t('results.playAgain')}</button>
+        <button className="btn btn-ghost" onClick={() => nav('/stats')}>{t('results.stats')}</button>
+        <button className="btn btn-ghost" onClick={() => nav('/')}>{t('results.home')}</button>
       </div>
     </div>
   )

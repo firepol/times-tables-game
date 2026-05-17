@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSessions } from '../hooks/useSessions'
 import type { Answer } from '../types'
 import './SessionDetailPage.css'
@@ -12,12 +13,13 @@ function typeLabel(type: Answer['questionType']) {
 
 function formatDate(iso: string) {
   const d = new Date(iso)
-  return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
-    ' ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+  return d.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+    ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
 }
 
 export default function SessionDetailPage() {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const { sessions } = useSessions()
   const session = sessions.find((s) => s.id === id)
@@ -27,9 +29,9 @@ export default function SessionDetailPage() {
       <div className="page">
         <div className="page-header">
           <button className="back-btn" onClick={() => nav('/stats')}>←</button>
-          <h2>Sessione non trovata</h2>
+          <h2>{t('sessionDetail.notFound')}</h2>
         </div>
-        <button className="btn btn-primary" onClick={() => nav('/stats')}>Torna alle statistiche</button>
+        <button className="btn btn-primary" onClick={() => nav('/stats')}>{t('sessionDetail.backToStats')}</button>
       </div>
     )
   }
@@ -40,21 +42,21 @@ export default function SessionDetailPage() {
     <div className="page">
       <div className="page-header">
         <button className="back-btn" onClick={() => nav('/stats')}>←</button>
-        <h2>Dettaglio sessione</h2>
+        <h2>{t('sessionDetail.title')}</h2>
       </div>
 
       <div className="card detail-summary">
-        <div className="detail-row"><span>Data</span><span>{formatDate(session.date)}</span></div>
-        <div className="detail-row"><span>Tabelle</span><span>{session.tables.join(', ')}</span></div>
-        <div className="detail-row"><span>Modalità</span><span>{session.mode}</span></div>
+        <div className="detail-row"><span>{t('sessionDetail.date')}</span><span>{formatDate(session.date)}</span></div>
+        <div className="detail-row"><span>{t('sessionDetail.tables')}</span><span>{session.tables.join(', ')}</span></div>
+        <div className="detail-row"><span>{t('sessionDetail.mode')}</span><span>{t(`modeLabels.${session.mode}`)}</span></div>
         <div className="detail-row">
-          <span>Punteggio</span>
+          <span>{t('sessionDetail.score')}</span>
           <span className="detail-score">{correct} / {session.answers.length}</span>
         </div>
       </div>
 
       <div className="card">
-        <p className="detail-section-title">Risposte</p>
+        <p className="detail-section-title">{t('sessionDetail.answers')}</p>
         <div className="answer-list">
           {session.answers.map((a, i) => {
             const { icon, cls } = typeLabel(a.questionType)
@@ -66,7 +68,9 @@ export default function SessionDetailPage() {
                 <span className={`type-lbl ${cls}`}>{icon}</span>
                 <span className="answer-formula">{formula}</span>
                 {!a.correct && (
-                  <span className="answer-user">→ {a.userAnswer}</span>
+                  <span className="answer-user">
+                    → {a.userAnswer === -1 ? '⏱' : a.userAnswer}
+                  </span>
                 )}
                 <span className="answer-check">{a.correct ? '✓' : '✗'}</span>
               </div>

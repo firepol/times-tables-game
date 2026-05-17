@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSessions } from '../hooks/useSessions'
 import { useWeakCalcs } from '../hooks/useWeakCalcs'
 import type { GameSession } from '../types'
@@ -7,8 +8,8 @@ import './StatsPage.css'
 
 function formatDate(iso: string) {
   const d = new Date(iso)
-  return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' }) +
-    ' ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+  return d.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit' }) +
+    ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
 }
 
 function formatDuration(ms: number) {
@@ -17,6 +18,7 @@ function formatDuration(ms: number) {
 }
 
 function CalcErrorBar({ calcKey, sessions, lastN }: { calcKey: string; sessions: GameSession[]; lastN: number }) {
+  const { t } = useTranslation()
   const recent = sessions.slice(-lastN)
   const [rawA, rawB] = calcKey.split('x')
   const a = parseInt(rawA), b = parseInt(rawB)
@@ -38,7 +40,7 @@ function CalcErrorBar({ calcKey, sessions, lastN }: { calcKey: string; sessions:
     <div className="calc-error-bar">
       <div className="calc-error-label">
         <span className="calc-name">{a} × {b} = {a * b}</span>
-        <span className="calc-total">{total} err</span>
+        <span className="calc-total">{t('stats.errors', { n: total })}</span>
       </div>
       <div className="calc-error-bar-fill">
         {Array.from({ length: Math.min(total, maxBar) }).map((_, i) => (
@@ -56,6 +58,7 @@ function CalcErrorBar({ calcKey, sessions, lastN }: { calcKey: string; sessions:
 
 export default function StatsPage() {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const { sessions } = useSessions()
   const [lastN, setLastN] = useState(10)
   const weakCalcs = useWeakCalcs(sessions, lastN)
@@ -66,27 +69,27 @@ export default function StatsPage() {
     <div className="page">
       <div className="page-header">
         <button className="back-btn" onClick={() => nav('/')}>←</button>
-        <h2>Statistiche</h2>
+        <h2>{t('stats.title')}</h2>
         <span className="sessions-count">{sessions.length}/100</span>
       </div>
 
       <div className="stats-filter">
-        <span className="filter-label">Ultime:</span>
+        <span className="filter-label">{t('stats.last')}</span>
         {[5, 10, 20, sessions.length].map((n) => (
           <button
             key={n}
             className={`filter-btn ${lastN === n ? 'active' : ''}`}
             onClick={() => setLastN(n)}
           >
-            {n === sessions.length ? 'Tutte' : n}
+            {n === sessions.length ? t('stats.all') : n}
           </button>
         ))}
       </div>
 
       {weakCalcs.length > 0 && (
         <div className="card">
-          <p className="stats-section-title">Calcoli più difficili</p>
-          <p className="stats-legend">✍ = risposta digitata  •  MC = scelta multipla  •  ↔ = drag&drop</p>
+          <p className="stats-section-title">{t('stats.hardestCalcs')}</p>
+          <p className="stats-legend">{t('stats.legend')}</p>
           <div className="weak-list">
             {weakCalcs.slice(0, 8).map((key) => (
               <CalcErrorBar key={key} calcKey={key} sessions={sessions} lastN={lastN} />
@@ -97,27 +100,27 @@ export default function StatsPage() {
             style={{ marginTop: 16, padding: '12px' }}
             onClick={() => nav('/play', { state: { focusCalcKeys: weakCalcs } })}
           >
-            Allena questi calcoli
+            {t('stats.trainWeak')}
           </button>
         </div>
       )}
 
       <div className="card">
-        <p className="stats-section-title">Sessioni recenti</p>
+        <p className="stats-section-title">{t('stats.recentSessions')}</p>
         {recent.length === 0 ? (
-          <p className="no-sessions">Nessuna sessione ancora. Gioca la prima!</p>
+          <p className="no-sessions">{t('stats.noSessions')}</p>
         ) : (
           <div className="session-list">
             {recent.map((s) => {
-              const correct = s.answers.filter((a) => a.correct).length
+              const correctCount = s.answers.filter((a) => a.correct).length
               const total = s.answers.length
               return (
                 <div key={s.id} className="session-row" onClick={() => nav(`/stats/${s.id}`)}>
                   <div className="session-date">{formatDate(s.date)}</div>
                   <div className="session-meta">
-                    <span>{total} dom</span>
-                    <span className="ok">{correct}✓</span>
-                    <span className="ko">{total - correct}✗</span>
+                    <span>{t('stats.questions', { n: total })}</span>
+                    <span className="ok">{correctCount}✓</span>
+                    <span className="ko">{total - correctCount}✗</span>
                     <span className="dur">⏱{formatDuration(s.durationMs)}</span>
                   </div>
                 </div>
